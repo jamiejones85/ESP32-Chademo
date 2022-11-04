@@ -30,6 +30,10 @@ uint8_t uint8Val;
 uint8_t print8Val;
 uint8_t help8Val;
 
+volatile uint8_t timerIntCounter = 0;
+volatile uint8_t timerFastCounter  = 0;
+volatile uint8_t timerChademoCounter = 0;
+
 bool IRAM_ATTR TimerHandler0(void * timerNo)
 { 
 timerFastCounter++;
@@ -42,8 +46,6 @@ timerFastCounter++;
 
   if (timerFastCounter == 8)
   {
-    debugTick = 1;
-    wifiTick = 1;
     timerFastCounter = 0;
     timerIntCounter++;
     if (timerIntCounter == 18)
