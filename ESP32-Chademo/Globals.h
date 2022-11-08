@@ -1,17 +1,19 @@
 #ifndef GLOBALS_H_
 #define GLOBALS_H_
 
-#define CHADEMO_IN1 4
-#define CHADEMO_IN2 7
+#define CHADEMO_IN1 36
+#define CHADEMO_IN2 39
 
-#define CHADEMO_OUT1 8//??
-#define CHADEMO_OUT2 9//??
-#define CHADEMO_OUT3 10//??
+#define CHADEMO_OUT1 32//??
+#define CHADEMO_OUT2 33//??
+#define CHADEMO_OUT3 25//??
 
-#define MCP2515_CS 17// CS input of MCP2515
-#define MCP2515_INT 23 // INT output of MCP2515
-#define MCP2515_SCK 22
+#define MCP2515_CS 5// CS input of MCP2515
+#define MCP2515_INT 34 // INT output of MCP2515
+#define MCP2515_SCK 18
 #define MCP2515_QUARTZ_FREQUENCY 16000000
+#define MCP2515_MISO 19
+#define MCP2515_MOSI 23
 
 #define CAN_BAUD 500000
 #define min(a, b)           (((a) < (b)) ?  (a) : (b))

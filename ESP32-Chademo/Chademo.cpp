@@ -499,7 +499,7 @@ void CHADEMO::sendCANBattSpecs()
   #endif
   outFrame.data[7] = 0; //not used
   //CAN.EnqueueTX(outFrame);
-  ACAN_ESP32::can.tryToSend(outFrame);
+  //ACAN_ESP32::can.tryToSend(outFrame);
   if (settings.debuggingLevel > 1)
   {
     Serial.print(F("CAR: Absolute MAX Voltage:"));
@@ -527,7 +527,7 @@ void CHADEMO::sendCANChargingTime()
   outFrame.data[5] = 0; //not used
   outFrame.data[6] = 0; //not used
   outFrame.data[7] = 0; //not used
-  ACAN_ESP32::can.tryToSend(outFrame);
+  //ACAN_ESP32::can.tryToSend(outFrame);
   if (settings.debuggingLevel > 1)
   {
     Serial.print(F("CAR: Charging Time"));
@@ -580,7 +580,7 @@ void CHADEMO::sendCANStatus()
   outFrame.data[6] = (uint8_t)settings.kiloWattHours; //charged rate (change to 100 for use with BMS SoC)
   #endif
   outFrame.data[7] = 0; //not used
-  ACAN_ESP32::can.tryToSend(outFrame);
+  //ACAN_ESP32::can.tryToSend(outFrame);
 
   if (settings.debuggingLevel > 1)
   {
