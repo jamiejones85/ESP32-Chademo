@@ -1,0 +1,45 @@
+<!doctype html>
+<html>
+<head>
+
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>ESP32-Chadmeo Settings</title>
+<link href="style.css" rel="stylesheet" type="text/css" />
+<script src="settings.js" type="text/javascript"></script>
+
+</head>
+<body onload="onLoad()">
+
+<div>
+	<form onsubmit="return false">
+		<h2>Chademo Settings</h2>
+		<p>Below settings are used for calculating SoC, if not using the from BMS setting.</p>
+		<div>
+			<label>Amp Hours<input name="ampHours" type="number" /></label>
+		</div>
+		<div>
+			<label>Capacity<input name="capacity" type="number" /></label>
+		</div>
+		<div>
+			<label>Use BMS<input name="useBms" type="checkbox" /></label>
+		</div>
+
+		<div>
+			<label>Max Charge Voltage<input name="maxChargeVoltage" type="number" />V</label>
+		</div>
+		<div>
+			<label>Target Charge Voltage<input name="targetChargeVoltage" type="number" />V</label>
+		</div>
+		<div>
+			<label>Max Charge Amps<input name="maxChargeAmperage" type="number" />A</label>
+		</div>
+		<div>
+			<label>Min Charge Amps<input name="minChargeAmperage" type="number" />A</label>
+		</div>
+		<div>
+			<button type='submit' onclick="save()">Save</button>
+		</div>
+	</form>
+</div>
+</body>
+</html>

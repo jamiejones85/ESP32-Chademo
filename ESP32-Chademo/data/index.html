@@ -1,0 +1,76 @@
+<!doctype html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>ESP32-BMS</title>
+<link href="style.css" rel="stylesheet" type="text/css" />
+<script src="highcharts.js" type="text/javascript"></script>
+<script src="highcharts-more.js" type="text/javascript"></script>
+<script src="solid-gauge.js" type="text/javascript"></script>
+<script src="gauges.js" type="text/javascript"></script>
+<script src="index.js" type="text/javascript"></script>
+</head>
+<body onload="onLoad()">
+
+<div id="output">
+	<div class="flex-block">
+		<div class="info-block">
+			<h3>Chademo Status</h3> 
+			<div class="data" id="mode">Waiting</div>
+		</div>
+		<div class="info-block">
+			<h3>EVSE Max Voltage</h3> 
+			<div class="data"><span id="evseVoltage">-</span>V</div>
+		</div>
+		<div class="info-block">
+			<h3>EVSE Threshold Voltage</h3> 
+			<div class="data"><span id="evseThreshold">-</span>V</div>
+		</div>
+		<div class="info-block">
+			<h3>EVSE Max Current</h3> 
+			<div class="data"><span id="evseAmps">-</span>A</div>
+		</div>
+	</div>
+
+	<figure class="highcharts-figure flex-block">
+		<div id="container-voltage" class="chart-container"></div>
+		<div id="container-current" class="chart-container"></div>
+		<div id="container-power" class="chart-container"></div>
+	</figure>
+	<div class="flex-block">
+		<div class="info-block">
+			<h3>IN 1</h3> 
+			<div class="data" id="in1">-</div>
+		</div>
+		<div class="info-block">
+			<h3>IN 2</h3> 
+			<div class="data" id="in2">-</div>
+		</div>
+		<div class="info-block">
+			<h3>OUT 1</h3> 
+			<div class="data" id="out1">-</div>
+		</div>
+		<div class="info-block">
+			<h3>OUT 2</h3> 
+			<div class="data" id="out2">-</div>
+		</div>
+	</div>
+
+</div>
+
+<p><a href="/wifi">Wifi Settings</a>
+<p><a href="#" onclick="toggleHidden('update')">Upload Update</a>
+<p><a href="/settings.html">Settings</a>
+
+<div id="update" class="hidden">
+	<h2 id="update">Update</h2>
+	<p>Upload any files for updating this web interface.</p>
+	<form id="uploadform" enctype="multipart/form-data" action="edit" method="POST">
+		<input id="updatefile" name="updatefile" type="file" onchange="fileSelected();" />
+		<input type="button" onclick="uploadFile();" value="Upload" />
+	</form>
+</div>
+
+
+</body>
+</html>
