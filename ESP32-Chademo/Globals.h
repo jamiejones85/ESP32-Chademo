@@ -16,7 +16,7 @@
 
 #define CAN_BAUD 500000
 #define min(a, b)           (((a) < (b)) ?  (a) : (b))
-#define EEPROM_VALID	0xEE
+#define EEPROM_VALID	0xCC
 
 //These have been moved to eeprom. After initial compile the values will be read from EEPROM.
 //These thus set the default value to write to eeprom upon first start up
@@ -39,6 +39,8 @@ typedef struct
   uint8_t capacity; //27
   uint8_t debuggingLevel; //29
   bool useBms;
+  bool currentMissmatch;
+
 } EESettings;
 
 extern EESettings settings;

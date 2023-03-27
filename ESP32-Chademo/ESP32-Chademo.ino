@@ -78,6 +78,8 @@ void setup() {
   
   pinMode(CHADEMO_IN2, INPUT);
   pinMode(CHADEMO_IN1, INPUT);
+  pinMode(CHADEMO_OUT1, OUTPUT);
+  pinMode(CHADEMO_OUT2, OUTPUT);
   pinMode(LED_PIN, OUTPUT);
   digitalWrite(LED_PIN, HIGH);
 

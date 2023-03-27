@@ -35,23 +35,8 @@ function setValue(id, value) {
 	element.innerHTML = value
 }
 
-//  STARTUP,
-SEND_INITIAL_PARAMS,
-WAIT_FOR_EVSE_PARAMS,
-SET_CHARGE_BEGIN,
-WAIT_FOR_BEGIN_CONFIRMATION,
-CLOSE_CONTACTORS,
-WAIT_FOR_PRECHARGE,
-RUNNING,
-CEASE_CURRENT,
-WAIT_FOR_ZERO_CURRENT,
-OPEN_CONTACTOR,
-FAULTED,
-STOPPED,
-LIMBO
-//
 function updateText(key, data) {
-	if (key == 'status') {
+	if (key == 'chademoState') {
 		if (data == 0) {
 			setValue('mode', "Waiting");
 		} else if (data == 1) {
@@ -115,7 +100,7 @@ function onLoad() {
 function onOpen(evt) {
 	console.log("Socket Connected");
 }
-   
+
 function onMessage(json) {
 	Object.keys(json).forEach(function(key) {
 		updateGauge(key, json[key]);
@@ -128,20 +113,20 @@ function onMessage(json) {
  function onError(evt) {
 	console.log("Socket Error")
  }
-   
+
  function doSend(message) {
 	websocket.send(message);
  }
-   
+
  function writeToScreen(message) {
-	var pre = document.createElement("p"); 
-	pre.style.wordWrap = "break-word"; 
+	var pre = document.createElement("p");
+	pre.style.wordWrap = "break-word";
 	pre.innerHTML = message; output.appendChild(pre);
  }
 
  function chargerWebSocket(wsUri) {
 	websocket = new WebSocket(wsUri);
-	   
+
 	websocket.onopen = function(evt) {
 	   onOpen(evt)
 	};
@@ -149,11 +134,11 @@ function onMessage(json) {
 	websocket.onclose = function(evt) {
 		console.log(evt)
 	};
-   
+
 	websocket.onmessage = function(evt) {
 		onMessage(JSON.parse(evt.data))
 	};
-   
+
 	websocket.onerror = function(evt) {
 	   onError(evt)
 	};
@@ -164,18 +149,18 @@ function onMessage(json) {
 }
 
 /** @brief uploads file to web server, if bin-file uploaded, starts a firmware upgrade */
-function uploadFile() 
+function uploadFile()
 {
 	var xmlhttp = new XMLHttpRequest();
 	var form = document.getElementById('uploadform');
-	
+
 	if (form.getFormData)
 		var fd = form.getFormData();
 	else
 		var fd = new FormData(form);
 	var file = document.getElementById('updatefile').files[0].name;
 
-	xmlhttp.onload = function() 
+	xmlhttp.onload = function()
 	{
 		document.getElementById("bar").innerHTML = "<p>Upload complete</p>";
 		if (file.endsWith(".hex"))
