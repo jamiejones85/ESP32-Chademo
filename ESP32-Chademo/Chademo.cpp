@@ -138,7 +138,9 @@ void CHADEMO::loop()
 
     if (!bDoMismatchChecks && chademoState == RUNNING)
     {
-      if ((CurrentMillis - mismatchStart) >= mismatchDelay) bDoMismatchChecks = 1;
+      if (settings.currentMissmatch && (CurrentMillis - mismatchStart) >= mismatchDelay) {
+        bDoMismatchChecks = 1;
+      }
     }
 
     if (chademoState == LIMBO && (CurrentMillis - stateMilli) >= stateDelay)
@@ -492,12 +494,11 @@ void CHADEMO::sendCANBattSpecs()
   outFrame.data[3] = 0x00; // Not Used
   outFrame.data[4] = lowByte(settings.maxChargeVoltage);
   outFrame.data[5] = highByte(settings.maxChargeVoltage);
-//  #ifdef SIMPBMS
-//    outFrame.data[6] = (uint8_t)soc; //charged_rate_reference (change to SoC from BMS)
-//  #endif
-//  #ifndef SIMPBMS
-  outFrame.data[6] = (uint8_t)((settings.capacity - settings.ampHours) / settings.capacity) * 100; //charged_rate_reference ((46 - 30) / 46) * 100)
- /// #endif
+  if(settings.useBms) {
+     outFrame.data[6] = (uint8_t)soc; //charged_rate_reference (change to SoC from BMS)
+  } else {
+     outFrame.data[6] = (uint8_t)((settings.capacity - settings.ampHours) / settings.capacity) * 100; //charged_rate_reference ((46 - 30) / 46) * 100)
+  }
   outFrame.data[7] = 0; //not used
 
   ACAN_ESP32::can.tryToSend(outFrame);
@@ -574,12 +575,11 @@ void CHADEMO::sendCANStatus()
   outFrame.data[3] = askingAmps;
   outFrame.data[4] = faults;
   outFrame.data[5] = status;
-  #ifdef SIMPBMS
-  outFrame.data[6] = 100; //charged rate (change to 100 for use with BMS SoC)
-  #endif
-  #ifndef SIMPBMS
-  outFrame.data[6] = (uint8_t)settings.kiloWattHours; //charged rate (change to 100 for use with BMS SoC)
-  #endif
+  if(settings.useBms) {
+      outFrame.data[6] = 100; //charged rate (change to 100 for use with BMS SoC)
+  } else {
+      outFrame.data[6] = (uint8_t)settings.kiloWattHours; //charged rate (change to 100 for use with BMS SoC)
+  }
   outFrame.data[7] = 0; //not used
   ACAN_ESP32::can.tryToSend(outFrame);
 

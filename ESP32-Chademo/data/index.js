@@ -147,30 +147,3 @@ function onMessage(json) {
  function fileSelected()
 {
 }
-
-/** @brief uploads file to web server, if bin-file uploaded, starts a firmware upgrade */
-function uploadFile()
-{
-	var xmlhttp = new XMLHttpRequest();
-	var form = document.getElementById('uploadform');
-
-	if (form.getFormData)
-		var fd = form.getFormData();
-	else
-		var fd = new FormData(form);
-	var file = document.getElementById('updatefile').files[0].name;
-
-	xmlhttp.onload = function()
-	{
-		document.getElementById("bar").innerHTML = "<p>Upload complete</p>";
-		if (file.endsWith(".hex"))
-		{
-			runUpdate(-1, "/" + file);
-		} else {
-			setTimeout(function() { document.getElementById("bar").innerHTML = "" }, 5000);
-		}
-	}
-
-	xmlhttp.open("POST", "/edit");
-	xmlhttp.send(fd);
-}

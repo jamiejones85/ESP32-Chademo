@@ -37,7 +37,6 @@ function postSettings() {
     xhr.open('POST', '/settings');
     xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
     xhr.send(JSON.stringify(this.settings))
-    xhr.send()
 }
 
 function save() {
@@ -46,7 +45,11 @@ function save() {
         var fields = document.getElementsByName(k);
         if (fields.length > 0) {
             const field = fields[0];
-            this.settings[k] = parseInt(field.value)
+            if (field.type == 'checkbox') {
+              this.settings[k] = field.checked
+            } else {
+              this.settings[k] = parseInt(field.value)
+            }
         }
 
     })

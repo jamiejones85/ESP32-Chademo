@@ -15,19 +15,19 @@
 <div id="output">
 	<div class="flex-block">
 		<div class="info-block">
-			<h3>Chademo Status</h3> 
+			<h3>Chademo Status</h3>
 			<div class="data" id="mode">Waiting</div>
 		</div>
 		<div class="info-block">
-			<h3>EVSE Max Voltage</h3> 
+			<h3>EVSE Max Voltage</h3>
 			<div class="data"><span id="evseVoltage">-</span>V</div>
 		</div>
 		<div class="info-block">
-			<h3>EVSE Threshold Voltage</h3> 
+			<h3>EVSE Threshold Voltage</h3>
 			<div class="data"><span id="evseThreshold">-</span>V</div>
 		</div>
 		<div class="info-block">
-			<h3>EVSE Max Current</h3> 
+			<h3>EVSE Max Current</h3>
 			<div class="data"><span id="evseAmps">-</span>A</div>
 		</div>
 	</div>
@@ -37,21 +37,24 @@
 		<div id="container-current" class="chart-container"></div>
 		<div id="container-power" class="chart-container"></div>
 	</figure>
+	<figure class="highcharts-figure flex-block">
+		<div id="container-soc" class="chart-container"></div>
+	</figure>
 	<div class="flex-block">
 		<div class="info-block">
-			<h3>IN 1</h3> 
+			<h3>IN 1</h3>
 			<div class="data" id="in1">-</div>
 		</div>
 		<div class="info-block">
-			<h3>IN 2</h3> 
+			<h3>IN 2</h3>
 			<div class="data" id="in2">-</div>
 		</div>
 		<div class="info-block">
-			<h3>OUT 1</h3> 
+			<h3>OUT 1</h3>
 			<div class="data" id="out1">-</div>
 		</div>
 		<div class="info-block">
-			<h3>OUT 2</h3> 
+			<h3>OUT 2</h3>
 			<div class="data" id="out2">-</div>
 		</div>
 	</div>
@@ -59,7 +62,7 @@
 </div>
 
 <p><a href="/wifi">Wifi Settings</a>
-<p><a href="#" onclick="toggleHidden('update')">Upload Update</a>
+<p><a href="/update" >Upload Update</a>
 <p><a href="/settings.html">Settings</a>
 
 <div id="update" class="hidden">

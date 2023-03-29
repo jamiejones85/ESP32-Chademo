@@ -24,6 +24,7 @@ float Power = 0;
 float lastSavedAH = 0;
 int Count = 0;
 int socketMessage = 0;
+uint8_t soc;
 
 ISA Sensor;
 ACAN2515 can1 (MCP2515_CS, SPI, MCP2515_INT) ;
@@ -120,6 +121,8 @@ void setup() {
     settings.minChargeAmperage = MIN_CHARGE_A;
     settings.capacity = CAPACITY;
     settings.debuggingLevel = 1;
+    settings.currentMissmatch = true;
+
     Save();
   }
   help8Val = 1;
@@ -225,6 +228,8 @@ void printHelp() {
   Serial.println(F("CAPKWH - Sets pack kilowatt-hours"));
   Serial.println(F("DBG - Sets debugging level"));
   Serial.println(F("BMS - Sets use to 0 - No BMS, 1 - ESP32 BMS for SoC and cell voltage and temeratures"));
+  Serial.println(F("MISS - Sets use to 0 - Disable Current Miss-Match check, 1 - Enable Current Miss-Match check"));
+
 
   Serial.println(F("Example: V=395 - sets CHAdeMO voltage target to 395"));
 }
@@ -285,6 +290,16 @@ void ParseCommand() {
     uint8Val = Serial.parseInt();
     if (uint8Val >= 0 && uint8Val < 2) {
       settings.useBms = uint8Val == 1;
+      Save();
+      print8Val = 1;
+    } else {
+      RngErr();
+    }
+  }
+  else if (cmdStr == "MISS") {
+    uint8Val = Serial.parseInt();
+    if (uint8Val >= 0 && uint8Val < 2) {
+      settings.currentMissmatch = uint8Val == 1;
       Save();
       print8Val = 1;
     } else {
@@ -372,6 +387,8 @@ void printSettings() {
   Serial.println (settings.packSizeKWH, 2);
   Serial.print (F("BMS "));
   Serial.println (settings.useBms, 1);
+  Serial.print (F("MISS "));
+  Serial.println (settings.currentMissmatch, 1);
   Serial.print (F("DBG "));
   Serial.println (settings.debuggingLevel, 1);
   Serial.println (F("-"));
@@ -411,6 +428,7 @@ void broadcastMessage() {
       json["amperage"] = Sensor.Amperes;
       json["power"] = Sensor.KW;
       json["ampHours"] = Sensor.AH;
+      json["soc"] = soc;
 
       size_t len = serializeJson(json, buffer);  // serialize to buffe
       chademoWebServer.getWebSocket().textAll(buffer, len);
@@ -481,9 +499,6 @@ void loop() {
       digitalWrite(LED_PIN, !digitalRead(LED_PIN));
       Count = 0;
       SerialCommand();
-//      #ifdef SIMPBMS
-//      chademo.setStateOfCharge(simpbms.getStateOfCharge());
-//      #endif
       sendStatusToVCU();
       broadcastMessage();
 
@@ -507,5 +522,12 @@ void loop() {
   }
   if (can1.receive(inFrame)) {
     Sensor.handleCANFrame(inFrame);
+    if (settings.useBms) {
+        if (inFrame.id == 0x355) {
+           soc = (inFrame.data[1] << 8) + inFrame.data[0];
+           chademo.setStateOfCharge(soc);
+        }
+    }
+
   }
 }

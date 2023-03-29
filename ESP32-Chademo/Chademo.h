@@ -101,6 +101,7 @@ class CHADEMO
     void setBattOverTemp();
     void setStateOfCharge(uint8_t stateofcharge);
 
+
     //these need to be accessed quickly in tight spots so they're public in an attempt at efficiency
     uint8_t bChademoMode; //accessed but not modified in ISR so it should be OK non-volatile
     uint8_t bChademoSendRequests; //should we be sending periodic status updates?
@@ -128,7 +129,6 @@ class CHADEMO
     uint32_t lastCommTime;
     const uint16_t lastCommTimeout = 1000; //allow up to 1 second of comm fault before getting angry
     uint8_t soc; //BMS reported SoC
-
     CHADEMOSTATE chademoState;
     CHADEMOSTATE stateHolder;
     EVSE_PARAMS evse_params;

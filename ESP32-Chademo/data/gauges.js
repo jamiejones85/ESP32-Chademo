@@ -8,9 +8,19 @@ var updateGauge = function(key, value) {
         updateCurrent(value)
     } else if (key == 'power') {
         updatePower(value)
+    } else if (key == 'soc') {
+        updateSOC(value)
     }
 
 };
+
+var updateSOC = function(newVal) {
+    if (chartSoc) {
+        point = chartSoc.series[0].points[0];
+        point.update(Math.round(newVal));
+    }
+}
+
 
 var updateCurrent = function(newVal) {
     if (chartCurrent) {
@@ -25,7 +35,7 @@ var updatePower = function(newVal) {
         point.update(Math.round(newVal * -1));
     }
 }
-  
+
 var updateVoltage = function(newVal) {
     if (chartVoltage) {
         point = chartVoltage.series[0].points[0];
@@ -41,9 +51,9 @@ var initGauges = function() {
             chart: {
                 type: 'solidgauge'
             },
-        
+
             title: null,
-        
+
             pane: {
                 center: ['50%', '85%'],
                 size: '140%',
@@ -57,15 +67,15 @@ var initGauges = function() {
                     shape: 'arc'
                 }
             },
-        
+
             exporting: {
                 enabled: false
             },
-        
+
             tooltip: {
                 enabled: false
             },
-        
+
             // the value axis
             yAxis: {
                 stops: [
@@ -84,7 +94,7 @@ var initGauges = function() {
                     y: 16
                 }
             },
-        
+
             plotOptions: {
                 solidgauge: {
                     dataLabels: {
@@ -95,20 +105,20 @@ var initGauges = function() {
                 }
             }
         };
-    
+
         chartCurrent = Highcharts.chart('container-current', Highcharts.merge(gaugeOptions, {
             yAxis: {
                 min: 0,
-                max: 100,	
+                max: 100,
                 title: {
                     text: 'Current'
                 }
             },
-        
+
             credits: {
                 enabled: false
             },
-        
+
             series: [{
                 name: 'Current',
                 data: [0],
@@ -123,7 +133,7 @@ var initGauges = function() {
                     valueSuffix: ' A'
                 }
             }]
-        
+
         }));
     }
 
@@ -132,9 +142,9 @@ var initGauges = function() {
             chart: {
                 type: 'solidgauge'
             },
-        
+
             title: null,
-        
+
             pane: {
                 center: ['50%', '85%'],
                 size: '140%',
@@ -148,15 +158,15 @@ var initGauges = function() {
                     shape: 'arc'
                 }
             },
-        
+
             exporting: {
                 enabled: false
             },
-        
+
             tooltip: {
                 enabled: false
             },
-        
+
             // the value axis
             yAxis: {
                 stops: [
@@ -175,7 +185,7 @@ var initGauges = function() {
                     y: 16
                 }
             },
-        
+
             plotOptions: {
                 solidgauge: {
                     dataLabels: {
@@ -186,20 +196,20 @@ var initGauges = function() {
                 }
             }
         };
-    
+
         chartVoltage = Highcharts.chart('container-voltage', Highcharts.merge(gaugeOptions, {
             yAxis: {
                 min: 0,
-                max: 100,	
+                max: 100,
                 title: {
                     text: 'Voltage'
                 }
             },
-        
+
             credits: {
                 enabled: false
             },
-        
+
             series: [{
                 name: 'Voltage',
                 data: [10],
@@ -214,7 +224,7 @@ var initGauges = function() {
                     valueSuffix: 'V'
                 }
             }]
-        
+
         }));
     }
 
@@ -223,9 +233,9 @@ var initGauges = function() {
             chart: {
                 type: 'solidgauge'
             },
-        
+
             title: null,
-        
+
             pane: {
                 center: ['50%', '85%'],
                 size: '140%',
@@ -239,15 +249,15 @@ var initGauges = function() {
                     shape: 'arc'
                 }
             },
-        
+
             exporting: {
                 enabled: false
             },
-        
+
             tooltip: {
                 enabled: false
             },
-        
+
             // the value axis
             yAxis: {
                 stops: [
@@ -266,7 +276,7 @@ var initGauges = function() {
                     y: 16
                 }
             },
-        
+
             plotOptions: {
                 solidgauge: {
                     dataLabels: {
@@ -277,20 +287,20 @@ var initGauges = function() {
                 }
             }
         };
-    
+
         chartPower = Highcharts.chart('container-power', Highcharts.merge(gaugeOptions, {
             yAxis: {
                 min: 0,
-                max: 100,	
+                max: 100,
                 title: {
                     text: 'Power'
                 }
             },
-        
+
             credits: {
                 enabled: false
             },
-        
+
             series: [{
                 name: 'Power',
                 data: [0],
@@ -305,12 +315,104 @@ var initGauges = function() {
                     valueSuffix: ' KW'
                 }
             }]
-        
+
+        }));
+    }
+
+    var initSocGauge = function() {
+        var gaugeOptions = {
+            chart: {
+                type: 'solidgauge'
+            },
+
+            title: null,
+
+            pane: {
+                center: ['50%', '85%'],
+                size: '140%',
+                startAngle: -90,
+                endAngle: 90,
+                background: {
+                    backgroundColor:
+                        Highcharts.defaultOptions.legend.backgroundColor || '#EEE',
+                    innerRadius: '60%',
+                    outerRadius: '100%',
+                    shape: 'arc'
+                }
+            },
+
+            exporting: {
+                enabled: false
+            },
+
+            tooltip: {
+                enabled: false
+            },
+
+            // the value axis
+            yAxis: {
+                stops: [
+                  [0.2, '#DF5353'], // red
+                  [0.6, '#DDDF0D'], // yellow
+                  [0.8, '#55BF3B'] // green
+                ],
+                lineWidth: 0,
+                tickWidth: 0,
+                minorTickInterval: null,
+                tickAmount: 2,
+                title: {
+                    y: -70
+                },
+                labels: {
+                    y: 16
+                }
+            },
+
+            plotOptions: {
+                solidgauge: {
+                    dataLabels: {
+                        y: 5,
+                        borderWidth: 0,
+                        useHTML: true
+                    }
+                }
+            }
+        };
+
+        chartSoc = Highcharts.chart('container-soc', Highcharts.merge(gaugeOptions, {
+            yAxis: {
+                min: 0,
+                max: 100,
+                title: {
+                    text: 'SoC'
+                }
+            },
+
+            credits: {
+                enabled: false
+            },
+
+            series: [{
+                name: 'SoC',
+                data: [0],
+                dataLabels: {
+                    format:
+                        '<div style="text-align:center">' +
+                        '<span style="font-size:25px">{y}</span><br/>' +
+                        '<span style="font-size:12px;opacity:0.4">%</span>' +
+                        '</div>'
+                },
+                tooltip: {
+                    valueSuffix: ' %'
+                }
+            }]
+
         }));
     }
 
     initVoltageGauge();
     initCurrentGauge();
     initPowerGauge();
+    initSocGauge();
 
 }
