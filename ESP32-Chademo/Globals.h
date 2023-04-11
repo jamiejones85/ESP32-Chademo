@@ -15,7 +15,7 @@
 #define MCP2515_MOSI 23
 
 #define CAN_BAUD 500000
-#define min(a, b)           (((a) < (b)) ?  (a) : (b))
+#define minimum(a, b)           (((a) < (b)) ?  (a) : (b))
 #define EEPROM_VALID	0xCC
 
 //These have been moved to eeprom. After initial compile the values will be read from EEPROM.
@@ -48,5 +48,6 @@ extern float Voltage;
 extern float Current;
 extern unsigned long CurrentMillis;
 extern int Count;
+extern bool overrideStart1;
 
 #endif

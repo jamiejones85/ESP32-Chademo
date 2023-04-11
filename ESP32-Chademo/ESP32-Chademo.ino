@@ -2,6 +2,8 @@
 #include "Chademo.h"
 #include "ISAShunt.h"
 #include "ChademoWebServer.h"
+#include "WebSocketPrint.h"
+
 #include <SPIFFS.h>
 #include <ACAN_ESP32.h>
 #include <ACAN2515.h>
@@ -25,11 +27,15 @@ float lastSavedAH = 0;
 int Count = 0;
 int socketMessage = 0;
 uint8_t soc;
+extern bool overrideStart1 = false;
 
 ISA Sensor;
 ACAN2515 can1 (MCP2515_CS, SPI, MCP2515_INT) ;
 EESettings settings;
 ChademoWebServer chademoWebServer(settings);
+WebSocketPrint wsPrint(chademoWebServer.getWebSocket());
+CHADEMO chademo(wsPrint);
+
 String cmdStr;
 byte Command = 0; // "z" will reset the AmpHours and KiloWattHours counters
 
@@ -122,9 +128,11 @@ void setup() {
     settings.capacity = CAPACITY;
     settings.debuggingLevel = 1;
     settings.currentMissmatch = true;
-
     Save();
   }
+  //set to false on every boot.
+  overrideStart1 = false;
+  
   help8Val = 1;
   print8Val = 1;
 
@@ -415,6 +423,8 @@ void outputState() {
   Serial.print (!digitalRead(CHADEMO_IN1) > 0 ? F(":1 ") : F(":0 "));
   Serial.print (F("IN2"));
   Serial.print (!digitalRead(CHADEMO_IN2) > 0 ? F(":1 ") : F(":0 "));
+  Serial.print (overrideStart1 > 0 ? F(":1 ") : F(":0 "));
+  Serial.print (F("OVER1"));
   Serial.print (F("CHG T: "));
   Serial.println (CurrentMillis / 1000 - ChargeTimeRefSecs);
 }
@@ -445,6 +455,7 @@ void broadcastMessage() {
     }
     case 2: {
       //car status
+      json["OVER1"] = overrideStart1;
       json["OUT1"] = digitalRead(CHADEMO_OUT1);
       json["OUT2"] = digitalRead(CHADEMO_OUT2);
       json["IN1"] = !digitalRead(CHADEMO_IN1);

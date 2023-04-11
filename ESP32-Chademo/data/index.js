@@ -82,9 +82,34 @@ function updateText(key, data) {
 		setValue('out1', data)
 	} else if (key == 'OUT2') {
 		setValue('out2', data)
+	} else if (key == 'OVER1') {
+		setValue('over1', data)
+	} else if (key == 'info') {
+		writeToLog(data);
 	}
 }
 function initHandlers() {
+	var button = document.getElementById('saveLog');
+	button.addEventListener('click', saveTextAsFile);
+
+	var start1 = document.getElementById('start1')
+	start1.addEventListener('click', function() {
+		const xhr = new XMLHttpRequest();
+
+		// listen for `load` event
+		xhr.onload = () => {
+	
+			// print JSON response
+			if (xhr.status >= 200 && xhr.status < 300) {
+				// parse JSON
+
+			}
+		};
+	
+		xhr.open('POST', '/start1');
+		xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+		xhr.send({body:"void"})
+	});
 
 }
 
@@ -94,7 +119,7 @@ function onLoad() {
 
 	// output = document.getElementById("output");
 	initGauges();
-	// initHandlers();
+	initHandlers();
 }
 
 function onOpen(evt) {
@@ -118,10 +143,9 @@ function onMessage(json) {
 	websocket.send(message);
  }
 
- function writeToScreen(message) {
-	var pre = document.createElement("p");
-	pre.style.wordWrap = "break-word";
-	pre.innerHTML = message; output.appendChild(pre);
+ function writeToLog(message) {
+	const element = document.getElementById("log");
+	element.value += "\n"+ message;
  }
 
  function chargerWebSocket(wsUri) {
@@ -144,6 +168,29 @@ function onMessage(json) {
 	};
  }
 
- function fileSelected()
-{
-}
+ function saveTextAsFile() {
+	var textToWrite = document.getElementById('log').value;
+	var textFileAsBlob = new Blob([ textToWrite ], { type: 'text/plain' });
+	var fileNameToSaveAs = "chademo_log.txt"; //filename.extension
+  
+	var downloadLink = document.createElement("a");
+	downloadLink.download = fileNameToSaveAs;
+	downloadLink.innerHTML = "Download File";
+	if (window.webkitURL != null) {
+	  // Chrome allows the link to be clicked without actually adding it to the DOM.
+	  downloadLink.href = window.webkitURL.createObjectURL(textFileAsBlob);
+	} else {
+	  // Firefox requires the link to be added to the DOM before it can be clicked.
+	  downloadLink.href = window.URL.createObjectURL(textFileAsBlob);
+	  downloadLink.onclick = destroyClickedElement;
+	  downloadLink.style.display = "none";
+	  document.body.appendChild(downloadLink);
+	}
+  
+	downloadLink.click();
+  }
+  
+  function destroyClickedElement(event) {
+	// remove the link from the DOM
+	document.body.removeChild(event.target);
+  }

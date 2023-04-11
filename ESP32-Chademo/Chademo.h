@@ -3,6 +3,7 @@
 #include <Arduino.h>
 #include "Globals.h"
 #include <ACAN_ESP32.h>
+#include "WebSocketPrint.h"
 
 enum CHADEMOSTATE
 {
@@ -86,7 +87,7 @@ typedef struct
 class CHADEMO
 {
   public:
-    CHADEMO();
+    CHADEMO(WebSocketPrint& webSocketPrint);
     void setDelayedState(int newstate, uint16_t delayTime);
     CHADEMOSTATE getState();
     EVSE_PARAMS getEVSEParams();
@@ -138,8 +139,8 @@ class CHADEMO
     void sendCANStatus();
     void sendCANBattSpecs();
     void sendCANChargingTime();
-};
 
-extern CHADEMO chademo;
+    WebSocketPrint& webSocketPrint;
+};
 
 #endif
