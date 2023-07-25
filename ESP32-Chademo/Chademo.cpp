@@ -27,6 +27,7 @@ CHADEMO::CHADEMO(WebSocketPrint& webSocketPrint) : webSocketPrint { webSocketPri
   stateHolder = STOPPED;
   carStatus.contactorOpen = 1;
   carStatus.battOverTemp = 0;
+  carStatus.derated = 1;
 
 }
 
@@ -536,9 +537,9 @@ void CHADEMO::sendCANBattSpecs()
   outFrame.data[4] = lowByte(settings.maxChargeVoltage);
   outFrame.data[5] = highByte(settings.maxChargeVoltage);
   if(settings.useBms) {
-     outFrame.data[6] = (uint8_t)soc; //charged_rate_reference (change to SoC from BMS)
+     outFrame.data[6] = 100;
   } else {
-     outFrame.data[6] = (uint8_t)((settings.capacity - settings.ampHours) / settings.capacity) * 100; //charged_rate_reference ((46 - 30) / 46) * 100)
+     outFrame.data[6] = (uint8_t)settings.capacity; //pack size....
   }
   outFrame.data[7] = 0; //not used
 
@@ -567,8 +568,8 @@ void CHADEMO::sendCANChargingTime()
   outFrame.data[2] = 90; //ask for how long of a charge? It will be forceably stopped if we hit this time
   outFrame.data[3] = 60; //how long we think the charge will actually take
   outFrame.data[4] = 0; //not used
-  outFrame.data[5] = 0; //not used
-  outFrame.data[6] = 0; //not used
+  outFrame.data[5] = 0x02; //not used but lets just report a large battery incase
+  outFrame.data[6] = 0x0; //not used
   outFrame.data[7] = 0; //not used
   ACAN_ESP32::can.tryToSend(outFrame);
   if (settings.debuggingLevel > 1)
@@ -617,9 +618,9 @@ void CHADEMO::sendCANStatus()
   outFrame.data[4] = faults;
   outFrame.data[5] = status;
   if(settings.useBms) {
-      outFrame.data[6] = 100; //charged rate (change to 100 for use with BMS SoC)
+      outFrame.data[6] = soc; //charged rate (change to 100 for use with BMS SoC)
   } else {
-      outFrame.data[6] = (uint8_t)settings.kiloWattHours; //charged rate (change to 100 for use with BMS SoC)
+      outFrame.data[6] = (uint8_t)((settings.capacity - settings.ampHours) / settings.capacity) * 100; //charged rate (change to 100 for use with BMS SoC)
   }
   outFrame.data[7] = 0; //not used
   ACAN_ESP32::can.tryToSend(outFrame);

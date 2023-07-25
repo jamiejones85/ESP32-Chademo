@@ -54,6 +54,8 @@ typedef struct
   uint8_t chargingFault : 1; //signal EVSE that we found a fault
   uint8_t contactorOpen : 1; //tell EVSE whether we've closed the charging contactor
   uint8_t stopRequest : 1; //request that the charger cease operation before we really get going
+  uint8_t derated : 1; //request that the charger cease operation before we really get going
+
 } CARSIDE_STATUS;
 
 //The IDs for chademo comm - both carside and EVSE side so we know what to listen for
@@ -107,6 +109,7 @@ class CHADEMO
     uint8_t bChademoMode; //accessed but not modified in ISR so it should be OK non-volatile
     uint8_t bChademoSendRequests; //should we be sending periodic status updates?
     volatile uint8_t bChademoRequest;  //is it time to send one of those updates?
+    CARSIDE_STATUS carStatus;
 
   protected:
   private:
@@ -134,7 +137,6 @@ class CHADEMO
     CHADEMOSTATE stateHolder;
     EVSE_PARAMS evse_params;
     EVSE_STATUS evse_status;
-    CARSIDE_STATUS carStatus;
 
     void sendCANStatus();
     void sendCANBattSpecs();

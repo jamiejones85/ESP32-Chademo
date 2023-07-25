@@ -537,7 +537,38 @@ void loop() {
         if (inFrame.id == 0x355) {
            soc = (inFrame.data[1] << 8) + inFrame.data[0];
            chademo.setStateOfCharge(soc);
+        } else if (inFrame.id == 0x35A) { 
+          
+//          //alarms
+//          if (inFrame.data[0] & 0x4 == 0x4  && chademo.carStatus.battOverVolt == 0) {
+//            //overvoltage
+//            chademo.carStatus.battOverVolt = 1;
+//            wsPrint.message(F("BMS Over Voltage Error"));
+//
+//          }
+//          if (inFrame.data[0] & 0x40 == 0x40 && chademo.carStatus.battOverTemp == 0) {
+//            //over temperature
+//            chademo.carStatus.battOverTemp = 1;
+//            wsPrint.message(F("BMS Over Temperature Error"));
+//
+//          }
+//
+//          //temperature de-rate
+//          if (inFrame.data[4] & 0x40 == 0x40 && chademo.carStatus.derated == 0) {
+//            wsPrint.message(F("BMS temperature Derate"));
+//            chademo.setTargetAmperage(settings.maxChargeAmperage/2);
+//            chademo.carStatus.derated = 1;
+//          }
+//
+//          //voltage de-rate
+//          if (inFrame.data[4] & 0x04 == 0x04 && chademo.carStatus.derated == 0) {
+//              wsPrint.message(F("BMS Voltage Derate"));
+//              chademo.setTargetAmperage(settings.maxChargeAmperage/2);
+//              chademo.carStatus.derated = 1;
+//
+//          }
         }
+        
     }
 
   }
