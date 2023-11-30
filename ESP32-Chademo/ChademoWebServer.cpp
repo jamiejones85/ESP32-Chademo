@@ -99,6 +99,31 @@ void ChademoWebServer::setup()
 
      });
 
+     server.on(
+         "/start2",
+         HTTP_POST,
+         [](AsyncWebServerRequest * request){},
+         NULL,
+         [&](AsyncWebServerRequest * request, uint8_t *data, size_t len, size_t index, size_t total) {
+
+         overrideStart2 = !overrideStart2;
+         request->send(200, "application/json", "success");
+
+     });
+
+      server.on(
+         "/init",
+         HTTP_POST,
+         [](AsyncWebServerRequest * request){},
+         NULL,
+         [&](AsyncWebServerRequest * request, uint8_t *data, size_t len, size_t index, size_t total) {
+
+         initShunt = true;
+         request->send(200, "application/json", "success");
+
+     });
+
+
     server.serveStatic("/", SPIFFS, "/").setDefaultFile("index.html");
   
 

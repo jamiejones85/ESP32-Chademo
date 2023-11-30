@@ -49,5 +49,6 @@ extern float Current;
 extern unsigned long CurrentMillis;
 extern int Count;
 extern bool overrideStart1;
-
+extern bool overrideStart2;
+extern bool initShunt;
 #endif

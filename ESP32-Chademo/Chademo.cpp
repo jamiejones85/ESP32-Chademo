@@ -206,7 +206,7 @@ void CHADEMO::loop()
         setDelayedState(WAIT_FOR_BEGIN_CONFIRMATION, 50);
         break;
       case WAIT_FOR_BEGIN_CONFIRMATION:
-        if (!digitalRead(CHADEMO_IN2)) //inverse logic, OPTOs
+        if (!digitalRead(CHADEMO_IN2) || overrideStart2) //inverse logic, OPTOs
         {
           setDelayedState(CLOSE_CONTACTORS, 100);
         }
@@ -217,19 +217,11 @@ void CHADEMO::loop()
           webSocketPrint.message(F("CAR:Contactor close."));
         }
         digitalWrite(CHADEMO_OUT2, HIGH);
-        setDelayedState(WAIT_FOR_PRECHARGE, 50);
+        setDelayedState(RUNNING, 50);
         carStatus.contactorOpen = 0; //its closed now
         carStatus.chargingEnabled = 1; //please sir, I'd like some charge
         bStartedCharge = 1;
         mismatchStart = millis();
-        break;
-      case WAIT_FOR_PRECHARGE:
-        if (evse_status.presentVoltage > (Voltage - 50)) {
-          if (settings.debuggingLevel > 0) {
-            webSocketPrint.message(F("Pre-charge completed"));
-          }
-          setDelayedState(RUNNING, 50);
-        }
         break;
       case RUNNING:
         //do processing here by taking our measured voltage, amperage, and SOC to see if we should be commanding something
@@ -642,6 +634,8 @@ void CHADEMO::sendCANStatus()
     Serial.print(F(" kWh: "));
     Serial.print(settings.kiloWattHours);
     timestamp();
+
+
   }
 
 

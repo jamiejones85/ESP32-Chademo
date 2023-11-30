@@ -50,20 +50,18 @@ function updateText(key, data) {
 		} else if (data == 5) {
 			setValue('mode', "Close Contactors");
 		} else if (data == 6) {
-			setValue('mode', "Precharge");
-		} else if (data == 7) {
 			setValue('mode', "Running");
-		} else if (data == 8) {
+		} else if (data == 7) {
 			setValue('mode', "Sending Stop");
-		} else if (data == 9) {
+		} else if (data == 8) {
 			setValue('mode', "Wait for Stop");
-		} else if (data == 10) {
+		} else if (data == 9) {
 			setValue('mode', "Open Contactors");
-		} else if (data == 11) {
+		} else if (data == 10) {
 			setValue('mode', "Fault");
-		} else if (data == 12) {
+		} else if (data == 11) {
 			setValue('mode', "Stopped");
-		} else if (data == 13) {
+		} else if (data == 12) {
 			setValue('mode', "Limbo");
 		} else {
 			setValue('mode', "Unknown");
@@ -84,6 +82,8 @@ function updateText(key, data) {
 		setValue('out2', data)
 	} else if (key == 'OVER1') {
 		setValue('over1', data)
+	} else if (key == 'OVER2') {
+		setValue('over2', data)
 	} else if (key == 'info') {
 		writeToLog(data);
 	}
@@ -98,18 +98,58 @@ function initHandlers() {
 
 		// listen for `load` event
 		xhr.onload = () => {
-	
+
 			// print JSON response
 			if (xhr.status >= 200 && xhr.status < 300) {
 				// parse JSON
 
 			}
 		};
-	
+
 		xhr.open('POST', '/start1');
 		xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
 		xhr.send({body:"void"})
 	});
+
+
+	var start2 = document.getElementById('start2')
+	start2.addEventListener('click', function() {
+		const xhr = new XMLHttpRequest();
+
+		// listen for `load` event
+		xhr.onload = () => {
+
+			// print JSON response
+			if (xhr.status >= 200 && xhr.status < 300) {
+				// parse JSON
+
+			}
+		};
+
+		xhr.open('POST', '/start2');
+		xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+		xhr.send({body:"void"})
+	});
+
+	var initShunt = document.getElementById('initShunt')
+	initShunt.addEventListener('click', function() {
+		const xhr = new XMLHttpRequest();
+
+		// listen for `load` event
+		xhr.onload = () => {
+
+			// print JSON response
+			if (xhr.status >= 200 && xhr.status < 300) {
+				// parse JSON
+
+			}
+		};
+
+		xhr.open('POST', '/init');
+		xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+		xhr.send({body:"void"})
+	});
+
 
 }
 
@@ -172,7 +212,7 @@ function onMessage(json) {
 	var textToWrite = document.getElementById('log').value;
 	var textFileAsBlob = new Blob([ textToWrite ], { type: 'text/plain' });
 	var fileNameToSaveAs = "chademo_log.txt"; //filename.extension
-  
+
 	var downloadLink = document.createElement("a");
 	downloadLink.download = fileNameToSaveAs;
 	downloadLink.innerHTML = "Download File";
@@ -186,10 +226,10 @@ function onMessage(json) {
 	  downloadLink.style.display = "none";
 	  document.body.appendChild(downloadLink);
 	}
-  
+
 	downloadLink.click();
   }
-  
+
   function destroyClickedElement(event) {
 	// remove the link from the DOM
 	document.body.removeChild(event.target);

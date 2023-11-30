@@ -28,6 +28,8 @@ int Count = 0;
 int socketMessage = 0;
 uint8_t soc;
 extern bool overrideStart1 = false;
+extern bool overrideStart2 = false;
+extern bool initShunt = false;
 
 ISA Sensor;
 ACAN2515 can1 (MCP2515_CS, SPI, MCP2515_INT) ;
@@ -132,7 +134,8 @@ void setup() {
   }
   //set to false on every boot.
   overrideStart1 = false;
-  
+  overrideStart2 = false;
+
   help8Val = 1;
   print8Val = 1;
 
@@ -140,7 +143,7 @@ void setup() {
 
   WiFi.mode(WIFI_AP);
   WiFi.hostname(HOSTNAME);
-  WiFi.begin();
+  WiFi.begin("Beetle_Chademo", "Fia84grapu");
 
   chademoWebServer.setup();
 
@@ -173,6 +176,84 @@ void Save()
   Serial.println (F("SAVED"));
   interrupts();
   delay(1000);
+}
+
+void initaliseShunt() 
+{
+  CANMessage outframe;
+
+  outframe.id = 0x411;      // Set our transmission address ID
+  outframe.length = 8;       // Data payload 8 bytes
+  outframe.extended = 0; // Extended addresses  0=11-bit1=29bit
+  outframe.rtr=1;                 //No request
+  outframe.data.bytes[0]=0x34;
+  outframe.data.bytes[1]=0x00;  
+  outframe.data.bytes[2]=0x01;
+  outframe.data.bytes[3]=0x00;
+  outframe.data.bytes[4]=0x00;
+  outframe.data.bytes[5]=0x00;
+  outframe.data.bytes[6]=0x00;
+  outframe.data.bytes[7]=0x00;
+  bool sent = can1.tryToSend(outframe);
+
+	delay(700);
+	for(int i=0;i<9;i++)
+	{
+
+	
+    outframe.id = 0x411;      // Set our transmission address ID
+    outframe.length = 8;       // Data payload 8 bytes
+    outframe.extended = 0; // Extended addresses  0=11-bit1=29bit
+    outframe.rtr=1;                 //No request
+    outframe.data.bytes[0]=(0x20+i);
+    outframe.data.bytes[1]=0x42;  
+    outframe.data.bytes[2]=0x00;
+    outframe.data.bytes[3]=(0x60+(i*18));
+    outframe.data.bytes[4]=0x00;
+    outframe.data.bytes[5]=0x00;
+    outframe.data.bytes[6]=0x00;
+    outframe.data.bytes[7]=0x00;
+
+    can1.tryToSend(outframe);
+
+    delay(500);
+
+    outframe.id = 0x411;      // Set our transmission address ID
+    outframe.length = 8;       // Data payload 8 bytes
+    outframe.extended = 0; // Extended addresses  0=11-bit1=29bit
+    outframe.rtr=1;                 //No request
+    outframe.data.bytes[0]=0x32;
+    outframe.data.bytes[1]=0x00;  
+    outframe.data.bytes[2]=0x00;
+    outframe.data.bytes[3]=0x00;
+    outframe.data.bytes[4]=0x00;
+    outframe.data.bytes[5]=0x00;
+    outframe.data.bytes[6]=0x00;
+    outframe.data.bytes[7]=0x00;
+    can1.tryToSend(outframe);
+
+    delay(500);
+  }
+
+  outframe.id = 0x411;      // Set our transmission address ID
+  outframe.length = 8;       // Data payload 8 bytes
+  outframe.extended = 0; // Extended addresses  0=11-bit1=29bit
+  outframe.rtr=1;                 //No request
+  outframe.data.bytes[0]=0x34;
+  outframe.data.bytes[1]=0x01;  
+  outframe.data.bytes[2]=0x01;
+  outframe.data.bytes[3]=0x00;
+  outframe.data.bytes[4]=0x00;
+  outframe.data.bytes[5]=0x00;
+  outframe.data.bytes[6]=0x00;
+  outframe.data.bytes[7]=0x00;
+  can1.tryToSend(outframe);
+
+  initShunt = false;                 
+
+  String message = "Shunt Init Complete";
+  chademoWebServer.getWebSocket().textAll(message, strlen(message));
+
 }
 
 void sendStatusToVCU()
@@ -237,6 +318,8 @@ void printHelp() {
   Serial.println(F("DBG - Sets debugging level"));
   Serial.println(F("BMS - Sets use to 0 - No BMS, 1 - ESP32 BMS for SoC and cell voltage and temeratures"));
   Serial.println(F("MISS - Sets use to 0 - Disable Current Miss-Match check, 1 - Enable Current Miss-Match check"));
+  Serial.println(F("OVER1 - Sets use to 0 - Disable Override Start 1, 1 - Enable Override Start 1"));
+  Serial.println(F("OVER2 - Sets use to 0 - Disable Override Start 2, 1 - Enable Override Start 2"));
 
 
   Serial.println(F("Example: V=395 - sets CHAdeMO voltage target to 395"));
@@ -308,6 +391,26 @@ void ParseCommand() {
     uint8Val = Serial.parseInt();
     if (uint8Val >= 0 && uint8Val < 2) {
       settings.currentMissmatch = uint8Val == 1;
+      Save();
+      print8Val = 1;
+    } else {
+      RngErr();
+    }
+  } 
+  else if (cmdStr == "OVER1") {
+    uint8Val = Serial.parseInt();
+    if (uint8Val >= 0 && uint8Val < 2) {
+      overrideStart1 = uint8Val == 1;
+      Save();
+      print8Val = 1;
+    } else {
+      RngErr();
+    }
+  }
+  else if (cmdStr == "OVER2") {
+    uint8Val = Serial.parseInt();
+    if (uint8Val >= 0 && uint8Val < 2) {
+      overrideStart2 = uint8Val == 1;
       Save();
       print8Val = 1;
     } else {
@@ -423,8 +526,10 @@ void outputState() {
   Serial.print (!digitalRead(CHADEMO_IN1) > 0 ? F(":1 ") : F(":0 "));
   Serial.print (F("IN2"));
   Serial.print (!digitalRead(CHADEMO_IN2) > 0 ? F(":1 ") : F(":0 "));
-  Serial.print (overrideStart1 > 0 ? F(":1 ") : F(":0 "));
   Serial.print (F("OVER1"));
+  Serial.print (overrideStart1 > 0 ? F(":1 ") : F(":0 "));
+  Serial.print (F("OVER2"));
+  Serial.print (overrideStart2 > 0 ? F(":1 ") : F(":0 "));
   Serial.print (F("CHG T: "));
   Serial.println (CurrentMillis / 1000 - ChargeTimeRefSecs);
 }
@@ -456,6 +561,7 @@ void broadcastMessage() {
     case 2: {
       //car status
       json["OVER1"] = overrideStart1;
+      json["OVER2"] = overrideStart2;
       json["OUT1"] = digitalRead(CHADEMO_OUT1);
       json["OUT2"] = digitalRead(CHADEMO_OUT2);
       json["IN1"] = !digitalRead(CHADEMO_IN1);
@@ -511,6 +617,9 @@ void loop() {
       Count = 0;
       SerialCommand();
       sendStatusToVCU();
+      if (initShunt) {
+        initaliseShunt();
+      }
       broadcastMessage();
 
       if (print8Val > 0)
