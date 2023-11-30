@@ -184,14 +184,14 @@ void initaliseShunt()
 
   outframe.id = 0x411;      // Set our transmission address ID
   outframe.len = 8;       // Data payload 8 bytes
-  outframe.data.bytes[0]=0x34;
-  outframe.data.bytes[1]=0x00;  
-  outframe.data.bytes[2]=0x01;
-  outframe.data.bytes[3]=0x00;
-  outframe.data.bytes[4]=0x00;
-  outframe.data.bytes[5]=0x00;
-  outframe.data.bytes[6]=0x00;
-  outframe.data.bytes[7]=0x00;
+  outframe.data[0]=0x34;
+  outframe.data[1]=0x00;  
+  outframe.data[2]=0x01;
+  outframe.data[3]=0x00;
+  outframe.data[4]=0x00;
+  outframe.data[5]=0x00;
+  outframe.data[6]=0x00;
+  outframe.data[7]=0x00;
   bool sent = can1.tryToSend(outframe);
 
 	delay(700);
@@ -201,14 +201,14 @@ void initaliseShunt()
 	
     outframe.id = 0x411;      // Set our transmission address ID
     outframe.len = 8;       // Data payload 8 bytes
-    outframe.data.bytes[0]=(0x20+i);
-    outframe.data.bytes[1]=0x42;  
-    outframe.data.bytes[2]=0x00;
-    outframe.data.bytes[3]=(0x60+(i*18));
-    outframe.data.bytes[4]=0x00;
-    outframe.data.bytes[5]=0x00;
-    outframe.data.bytes[6]=0x00;
-    outframe.data.bytes[7]=0x00;
+    outframe.data[0]=(0x20+i);
+    outframe.data[1]=0x42;  
+    outframe.data[2]=0x00;
+    outframe.data[3]=(0x60+(i*18));
+    outframe.data[4]=0x00;
+    outframe.data[5]=0x00;
+    outframe.data[6]=0x00;
+    outframe.data[7]=0x00;
 
     can1.tryToSend(outframe);
 
@@ -216,14 +216,14 @@ void initaliseShunt()
 
     outframe.id = 0x411;      // Set our transmission address ID
     outframe.len = 8;       // Data payload 8 bytes
-    outframe.data.bytes[0]=0x32;
-    outframe.data.bytes[1]=0x00;  
-    outframe.data.bytes[2]=0x00;
-    outframe.data.bytes[3]=0x00;
-    outframe.data.bytes[4]=0x00;
-    outframe.data.bytes[5]=0x00;
-    outframe.data.bytes[6]=0x00;
-    outframe.data.bytes[7]=0x00;
+    outframe.data[0]=0x32;
+    outframe.data[1]=0x00;  
+    outframe.data[2]=0x00;
+    outframe.data[3]=0x00;
+    outframe.data[4]=0x00;
+    outframe.data[5]=0x00;
+    outframe.data[6]=0x00;
+    outframe.data[7]=0x00;
     can1.tryToSend(outframe);
 
     delay(500);
@@ -231,19 +231,19 @@ void initaliseShunt()
 
   outframe.id = 0x411;      // Set our transmission address ID
   outframe.len = 8;       // Data payload 8 bytes
-  outframe.data.bytes[0]=0x34;
-  outframe.data.bytes[1]=0x01;  
-  outframe.data.bytes[2]=0x01;
-  outframe.data.bytes[3]=0x00;
-  outframe.data.bytes[4]=0x00;
-  outframe.data.bytes[5]=0x00;
-  outframe.data.bytes[6]=0x00;
-  outframe.data.bytes[7]=0x00;
+  outframe.data[0]=0x34;
+  outframe.data[1]=0x01;  
+  outframe.data[2]=0x01;
+  outframe.data[3]=0x00;
+  outframe.data[4]=0x00;
+  outframe.data[5]=0x00;
+  outframe.data[6]=0x00;
+  outframe.data[7]=0x00;
   can1.tryToSend(outframe);
 
   initShunt = false;                 
 
-  String message = "Shunt Init Complete";
+  const char * message = "Shunt Init Complete";
   chademoWebServer.getWebSocket().textAll(message, strlen(message));
 
 }
