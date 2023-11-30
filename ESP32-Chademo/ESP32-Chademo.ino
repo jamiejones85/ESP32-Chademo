@@ -183,9 +183,7 @@ void initaliseShunt()
   CANMessage outframe;
 
   outframe.id = 0x411;      // Set our transmission address ID
-  outframe.length = 8;       // Data payload 8 bytes
-  outframe.extended = 0; // Extended addresses  0=11-bit1=29bit
-  outframe.rtr=1;                 //No request
+  outframe.len = 8;       // Data payload 8 bytes
   outframe.data.bytes[0]=0x34;
   outframe.data.bytes[1]=0x00;  
   outframe.data.bytes[2]=0x01;
@@ -202,9 +200,7 @@ void initaliseShunt()
 
 	
     outframe.id = 0x411;      // Set our transmission address ID
-    outframe.length = 8;       // Data payload 8 bytes
-    outframe.extended = 0; // Extended addresses  0=11-bit1=29bit
-    outframe.rtr=1;                 //No request
+    outframe.len = 8;       // Data payload 8 bytes
     outframe.data.bytes[0]=(0x20+i);
     outframe.data.bytes[1]=0x42;  
     outframe.data.bytes[2]=0x00;
@@ -219,9 +215,7 @@ void initaliseShunt()
     delay(500);
 
     outframe.id = 0x411;      // Set our transmission address ID
-    outframe.length = 8;       // Data payload 8 bytes
-    outframe.extended = 0; // Extended addresses  0=11-bit1=29bit
-    outframe.rtr=1;                 //No request
+    outframe.len = 8;       // Data payload 8 bytes
     outframe.data.bytes[0]=0x32;
     outframe.data.bytes[1]=0x00;  
     outframe.data.bytes[2]=0x00;
@@ -236,9 +230,7 @@ void initaliseShunt()
   }
 
   outframe.id = 0x411;      // Set our transmission address ID
-  outframe.length = 8;       // Data payload 8 bytes
-  outframe.extended = 0; // Extended addresses  0=11-bit1=29bit
-  outframe.rtr=1;                 //No request
+  outframe.len = 8;       // Data payload 8 bytes
   outframe.data.bytes[0]=0x34;
   outframe.data.bytes[1]=0x01;  
   outframe.data.bytes[2]=0x01;
